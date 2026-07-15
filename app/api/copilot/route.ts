@@ -73,7 +73,8 @@ export async function POST(req: NextRequest) {
     return new Response(ollamaTextStream(res), {
       headers: { "Content-Type": "text/plain; charset=utf-8" },
     });
-  } catch {
+  } catch (err) {
+    console.error("copilot: Ollama call failed, serving fallback:", err);
     // Ollama unreachable: serve the built-in fallback so the demo keeps working.
     const fallback =
       mode === "answer"

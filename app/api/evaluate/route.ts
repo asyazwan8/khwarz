@@ -91,7 +91,8 @@ export async function POST(req: NextRequest) {
       fallback: false,
     };
     return NextResponse.json(result);
-  } catch {
+  } catch (err) {
+    console.error("evaluate: Ollama marking failed, marking offline:", err);
     // Ollama unreachable or returned something unusable: mark offline instead.
     return NextResponse.json(markOffline(question, working, finalAnswer));
   }
