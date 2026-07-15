@@ -1,5 +1,8 @@
-export const OLLAMA_URL = process.env.OLLAMA_URL ?? "http://localhost:11434";
+// Strip any trailing slashes so `${OLLAMA_URL}/api/chat` never doubles up.
+export const OLLAMA_URL = (process.env.OLLAMA_URL ?? "http://localhost:11434").replace(/\/+$/, "");
 export const OLLAMA_MODEL = process.env.OLLAMA_MODEL ?? "gemma3";
+// Optional bearer token for hosted Ollama endpoints behind an auth proxy.
+export const OLLAMA_API_KEY = process.env.OLLAMA_API_KEY ?? "";
 
 export type ChatMessage = { role: "system" | "user" | "assistant"; content: string };
 
@@ -16,7 +19,10 @@ export async function ollamaChat(messages: ChatMessage[], options?: { json?: boo
   try {
     const res = await fetch(`${OLLAMA_URL}/api/chat`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(OLLAMA_API_KEY ? { Authorization: `Bearer ${OLLAMA_API_KEY}` } : {}),
+      },
       body: JSON.stringify({
         model: OLLAMA_MODEL,
         messages,

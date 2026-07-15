@@ -37,10 +37,17 @@ Khwarz is not a tutor. It is a question bank where students keep practicing. The
 
 ## Configuration
 
-| Environment variable | Default                  | Purpose                                |
-| -------------------- | ------------------------ | -------------------------------------- |
-| `OLLAMA_URL`         | `http://localhost:11434` | Ollama server address                  |
-| `OLLAMA_MODEL`       | `gemma3`                 | Model used for marking and the copilot |
+| Environment variable | Default                  | Purpose                                                     |
+| -------------------- | ------------------------ | ----------------------------------------------------------- |
+| `OLLAMA_URL`         | `http://localhost:11434` | Ollama server root, no trailing `/api/chat` and no trailing slash |
+| `OLLAMA_MODEL`       | `gemma3`                 | Model used for marking and the copilot                      |
+| `OLLAMA_API_KEY`     | (empty)                  | Optional bearer token sent as `Authorization: Bearer` if your Ollama sits behind an auth proxy |
+
+Set `OLLAMA_URL` to the server root only (the app appends `/api/chat` itself), for example `https://ollama.example.com`. A trailing slash is trimmed automatically. Leave `OLLAMA_API_KEY` unset when the endpoint needs no auth.
+
+### Deploying on Vercel
+
+Vercel functions cannot reach `localhost`, so point `OLLAMA_URL` at a publicly reachable Ollama host. In the Vercel project, open Settings, Environment Variables and add `OLLAMA_URL` (and `OLLAMA_API_KEY` if required), then redeploy. Without a reachable host the app still runs fully through the built-in offline marker and hints.
 
 Progress (khwarz, XP, answered questions) is stored in the browser's localStorage. Use the reset button on the chapter complete screen to start over, or clear site data.
 
